@@ -25,7 +25,7 @@ public class Main {
 
             switch (opcao) {
                 case 1 -> {
-                    System.out.print("Caminho do documento (ex: nomePasta\\nomeArquivo): ");
+                    System.out.print("Caminho do documento: ");
                     try{
                         documento = GerenciadorArquivo.carregarDocumento(sc.nextLine());
                         historico = new Historico(documento);
@@ -41,12 +41,12 @@ public class Main {
                     System.out.print("Categoria: ");
                     String categoria = sc.nextLine();
 
-                    System.out.println("Conteúdo (digite FIM para encerrar): ");
+                    System.out.println("Conteúdo (pule uma linha e digite FIM para encerrar): ");
                     StringBuilder sb = new StringBuilder();
 
                     String linha;
 
-                    while(!(linha = sc.nextLine()).equals("FIM")){
+                    while(!(linha = sc.nextLine()).equalsIgnoreCase("FIM")){
                         sb.append(linha).append("\n");
                     }
 
@@ -56,12 +56,11 @@ public class Main {
                             .conteudo(sb.toString().trim())
                             .build();
 
-                    historico = new Historico(documento);
-
                     String caminho = obterCaminhoArquivo();
 
                     if(verificarPasta(caminho)){
                         GerenciadorArquivo.salvarDocumento(documento, caminho);
+                        historico = new Historico(documento);
                         System.out.println("Documento salvo com sucesso!");
                     }
                 }
@@ -82,6 +81,8 @@ public class Main {
                         opcao = sc.nextInt();
                         sc.nextLine();
 
+                        assert historico != null;
+
                         if(opcao >= 1 && opcao <= 3)
                             historico.salvarVersao();
 
@@ -97,12 +98,12 @@ public class Main {
                                 System.out.println("Editado com sucesso!");
                             }
                             case 3 -> {
-                                System.out.println("Novo conteúdo (digite FIM para encerrar):");
+                                System.out.println("Novo conteúdo (pule uma linha e digite FIM para encerrar):");
 
                                 StringBuilder sb = new StringBuilder();
                                 String linha;
 
-                                while(!(linha = sc.nextLine()).equals("FIM")){
+                                while(!(linha = sc.nextLine()).equalsIgnoreCase("FIM")){
                                     sb.append(linha).append("\n");
                                 }
 
@@ -110,7 +111,7 @@ public class Main {
                                 System.out.println("Editado com sucesso!");
                             }
                             case 4 -> {
-                                if(historico != null && !historico.estaVazio()){
+                                if(!historico.estaVazio()){
                                     historico.desfazer();
                                     System.out.println("Documento restaurado com sucesso!");
                                 }else{
@@ -143,7 +144,7 @@ public class Main {
         System.out.print("Nome do arquivo: ");
         String nome = sc.nextLine();
 
-        System.out.print("Pasta do arquivo: ");
+        System.out.print("Pasta do arquivo (deixe em branco caso deseja salvar na raiz do projeto): ");
         String pasta = sc.nextLine();
 
         if(pasta.isBlank()){
@@ -154,7 +155,7 @@ public class Main {
 
     private static boolean possuiDocumento(Documento documento) {
         if(documento == null){
-            System.out.println("Nenhum documento foi encontrado!");
+            System.out.println("Nenhum documento foi encontrado!\nCarregue ou crie um novo documento!\n");
             return false;
         }
         return true;
@@ -171,7 +172,6 @@ public class Main {
 
         do{
             System.out.println("A pasta não existe. Deseja criá-la? (S/N): ");
-            System.out.println("*deixe em branco caso deseja salvar na raiz do projeto*");
             resposta = Character.toUpperCase(sc.next().charAt(0));
             sc.nextLine();
 

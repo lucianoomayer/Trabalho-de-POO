@@ -1,15 +1,18 @@
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-public class Documento {
+public class Documento implements Editavel{
     private String titulo;
     private String conteudo;
     private String categoria;
+    private LocalDateTime dataModificacao;
 
     private Documento(Builder builder) {
         this.titulo = builder.titulo;
         this.conteudo = builder.conteudo;
         this.categoria = builder.categoria;
+        this.dataModificacao = LocalDateTime.now();
     }
 
     public String getTitulo() {
@@ -24,49 +27,63 @@ public class Documento {
         return categoria;
     }
 
+    public LocalDateTime getDataModificacao() {
+        return dataModificacao;
+    }
+
     public void editarTitulo(String titulo) {
         this.titulo = titulo;
+        atualizarDataModificacao();
     }
 
     public void editarConteudo(String novoConteudo) {
         this.conteudo = novoConteudo;
+        atualizarDataModificacao();
     }
 
     public void editarCategoria(String categoria) {
         this.categoria = categoria;
+        atualizarDataModificacao();
     }
 
     public DocumentoMemento criarMemento() {
         return new DocumentoMemento(
                 titulo,
                 conteudo,
-                categoria);
+                categoria,
+                dataModificacao);
     }
 
     public void restaurarMemento(DocumentoMemento memento) {
         this.titulo = memento.getTitulo();
         this.conteudo = memento.getConteudo();
         this.categoria = memento.getCategoria();
+        this.dataModificacao = memento.getDataModificacao();
     }
 
     private String formatarTexto(String texto, int largura) {
         StringBuilder resultado = new StringBuilder();
+        String[] linhas = texto.split("\n");
 
-        String[] palavras = texto.split(" ");
+        for (String linha : linhas) {
+            String[] palavras = linha.split(" ");
+            int tamanhoLinha = 0;
 
-        int tamanhoLinha = 0;
-
-        for (String palavra : palavras) {
-
-            if (tamanhoLinha + palavra.length() + 1 > largura) {
-                resultado.append("\n");
-                tamanhoLinha = 0;
+            for (String palavra : palavras) {
+                if (tamanhoLinha + palavra.length() + 1 > largura) {
+                    resultado.append("\n");
+                    tamanhoLinha = 0;
+                }
+                resultado.append(palavra).append(" ");
+                tamanhoLinha += palavra.length() + 1;
             }
-
-            resultado.append(palavra).append(" ");
-            tamanhoLinha += palavra.length() + 1;
+            resultado.append("\n");
         }
-        return resultado.toString();
+        return resultado.toString().trim();
+    }
+
+    private void atualizarDataModificacao() {
+        this.dataModificacao = LocalDateTime.now();
     }
 
     @Override
@@ -79,6 +96,7 @@ public class Documento {
 
         sb.append(String.format("Título:    %s%n", titulo));
         sb.append(String.format("Categoria: %s%n", categoria));
+        sb.append(String.format("Data:      %s%n", dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))));
 
         sb.append("--------------------------------------------------\n");
         sb.append("Conteúdo:\n");
@@ -100,11 +118,17 @@ public class Documento {
         }
 
         public Builder conteudo(String conteudo) {
+            if (conteudo == null)
+                conteudo = "";
+
             this.conteudo = conteudo;
             return this;
         }
 
         public Builder categoria(String categoria) {
+            if (categoria == null)
+                categoria = "";
+
             this.categoria = categoria;
             return this;
         }
@@ -120,13 +144,13 @@ public class Documento {
         private final String titulo;
         private final String conteudo;
         private final String categoria;
-        private final LocalDateTime dataCriacao;
+        private final LocalDateTime dataModificacao;
 
-        private DocumentoMemento(String titulo, String conteudo, String categoria) {
+        private DocumentoMemento(String titulo, String conteudo, String categoria, LocalDateTime dataModificacao) {
             this.titulo = titulo;
             this.conteudo = conteudo;
             this.categoria = categoria;
-            this.dataCriacao = LocalDateTime.now();
+            this.dataModificacao = dataModificacao;
         }
 
         public String getTitulo() {
@@ -141,14 +165,14 @@ public class Documento {
             return categoria;
         }
 
-        public LocalDateTime getDataCriacao() { return dataCriacao; }
+        public LocalDateTime getDataModificacao() { return dataModificacao; }
 
         @Override
         public String toString() {
-            return "Título: " + titulo +
-                    "\nCategoria: " + categoria +
-                    "\nConteúdo: " + conteudo +
-                    "\nData: " + dataCriacao;
+            return "Título: " + getTitulo() +
+                    "\nCategoria: " + getCategoria() +
+                    "\nConteúdo: " + getConteudo() +
+                    "\nData: " + getDataModificacao();
         }
     }
 }
