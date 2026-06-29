@@ -13,7 +13,7 @@ public class Documento implements Editavel{
         this.titulo = builder.titulo;
         this.conteudo = builder.conteudo;
         this.categoria = builder.categoria;
-        this.dataModificacao = LocalDateTime.now();
+        this.dataModificacao = builder.dataModificacao != null ? builder.dataModificacao : LocalDateTime.now();
         this.autor = builder.autor;
     }
 
@@ -31,6 +31,10 @@ public class Documento implements Editavel{
 
     public LocalDateTime getDataModificacao() {
         return dataModificacao;
+    }
+
+    public String getDataFormatada() {
+        return dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
     public Autor getAutor() {
@@ -105,7 +109,7 @@ public class Documento implements Editavel{
         sb.append(String.format("Título:    %s%n", getTitulo()));
         sb.append(String.format("Categoria: %s%n", getCategoria()));
         sb.append(String.format("Autor:     %s%n", getAutor().getNome()));
-        sb.append(String.format("Data:      %s%n", getDataModificacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))));
+        sb.append(String.format("Data:      %s%n", getDataFormatada()));
 
         sb.append("--------------------------------------------------\n");
         sb.append("Conteúdo:\n");
@@ -121,6 +125,7 @@ public class Documento implements Editavel{
         private String conteudo;
         private String categoria;
         private Autor autor;
+        private LocalDateTime dataModificacao;
 
         public Builder titulo(String titulo) {
             this.titulo = titulo;
@@ -145,6 +150,11 @@ public class Documento implements Editavel{
 
         public Builder autor(Autor autor) {
             this.autor = autor;
+            return this;
+        }
+
+        public Builder dataModificacao(LocalDateTime dataModificacao) {
+            this.dataModificacao = dataModificacao;
             return this;
         }
 

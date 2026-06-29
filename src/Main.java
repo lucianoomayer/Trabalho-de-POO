@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -20,8 +21,14 @@ public class Main {
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
-            opcao = sc.nextInt();
-            sc.nextLine();
+            try {
+                opcao = sc.nextInt();
+                sc.nextLine();
+            }catch (InputMismatchException e){
+                System.out.println("Insira um valor valido!");
+                sc.nextLine();
+                continue;
+            }
 
             switch (opcao) {
                 case 1 -> {
@@ -41,7 +48,7 @@ public class Main {
                     System.out.print("Categoria: ");
                     String categoria = sc.nextLine();
 
-                    System.out.print("Nome do autor:");
+                    System.out.print("Nome do autor: ");
                     String nomeAutor = sc.nextLine();
 
                     System.out.println("Conteúdo (pule uma linha e digite FIM para encerrar): ");
