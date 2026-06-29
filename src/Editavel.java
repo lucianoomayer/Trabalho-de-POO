@@ -1,3 +1,4 @@
+// Editavel.java
 public interface Editavel {
     void editarTitulo(String titulo);
     void editarConteudo(String conteudo);

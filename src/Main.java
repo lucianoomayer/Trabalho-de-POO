@@ -1,3 +1,7 @@
+// Main.java
+// UNIVALI POLITECNICA KOBRASOL Ciência da Computação Programação 3ºper
+// TRABALHO M3 (29/05) – POO e Padrões de Projeto
+// Autores: Leonrdo Pinheiro de Souza e Luciano de Oliveira Mayer
 import java.io.File;
 import java.util.InputMismatchException;
 import java.util.Scanner;
