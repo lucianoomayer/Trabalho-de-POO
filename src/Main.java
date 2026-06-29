@@ -42,37 +42,41 @@ public class Main {
                     }
                 }
                 case 2 -> {
-                    System.out.print("Título: ");
-                    String titulo = sc.nextLine();
+                    try {
+                        System.out.print("Título: ");
+                        String titulo = sc.nextLine();
 
-                    System.out.print("Categoria: ");
-                    String categoria = sc.nextLine();
+                        System.out.print("Categoria: ");
+                        String categoria = sc.nextLine();
 
-                    System.out.print("Nome do autor: ");
-                    String nomeAutor = sc.nextLine();
+                        System.out.print("Nome do autor: ");
+                        String nomeAutor = sc.nextLine();
 
-                    System.out.println("Conteúdo (pule uma linha e digite FIM para encerrar): ");
-                    StringBuilder sb = new StringBuilder();
+                        System.out.println("Conteúdo (pule uma linha e digite FIM para encerrar): ");
+                        StringBuilder sb = new StringBuilder();
 
-                    String linha;
+                        String linha;
 
-                    while(!(linha = sc.nextLine()).equalsIgnoreCase("FIM")){
-                        sb.append(linha).append("\n");
-                    }
+                        while (!(linha = sc.nextLine()).equalsIgnoreCase("FIM")) {
+                            sb.append(linha).append("\n");
+                        }
 
-                    documento = new Documento.Builder()
-                            .titulo(titulo)
-                            .categoria(categoria)
-                            .conteudo(sb.toString().trim())
-                            .autor(new Autor(nomeAutor))
-                            .build();
+                        documento = new Documento.Builder()
+                                .titulo(titulo)
+                                .categoria(categoria)
+                                .conteudo(sb.toString().trim())
+                                .autor(new Autor(nomeAutor))
+                                .build();
 
-                    String caminho = obterCaminhoArquivo();
+                        String caminho = obterCaminhoArquivo();
 
-                    if(verificarPasta(caminho)){
-                        GerenciadorArquivo.salvarDocumento(documento, caminho);
-                        historico = new Historico(documento);
-                        System.out.println("Documento salvo com sucesso!");
+                        if (verificarPasta(caminho)) {
+                            GerenciadorArquivo.salvarDocumento(documento, caminho);
+                            historico = new Historico(documento);
+                            System.out.println("Documento salvo com sucesso!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
                 }
                 case 3 -> {
@@ -134,13 +138,17 @@ public class Main {
                     }
                 }
                 case 5 -> {
-                    if(possuiDocumento(documento)){
-                        String caminho = obterCaminhoArquivo();
+                    try {
+                        if (possuiDocumento(documento)) {
+                            String caminho = obterCaminhoArquivo();
 
-                        if(verificarPasta(caminho)){
-                            GerenciadorArquivo.salvarDocumento(documento, caminho);
-                            System.out.println("Documento salvo com sucesso!");
+                            if (verificarPasta(caminho)) {
+                                GerenciadorArquivo.salvarDocumento(documento, caminho);
+                                System.out.println("Documento salvo com sucesso!");
+                            }
                         }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
                 }
                 case 0 -> {
@@ -154,6 +162,10 @@ public class Main {
     private static String obterCaminhoArquivo() {
         System.out.print("Nome do arquivo: ");
         String nome = sc.nextLine();
+
+        if (nome.isEmpty()) {
+            throw new IllegalArgumentException("Nome não pode ser vazio!");
+        }
 
         System.out.print("Pasta do arquivo (deixe em branco caso deseja salvar na raiz do projeto): ");
         String pasta = sc.nextLine();
