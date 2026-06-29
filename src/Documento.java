@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Documento implements Editavel{
     private String titulo;
+    private Autor autor;
     private String conteudo;
     private String categoria;
     private LocalDateTime dataModificacao;
@@ -13,6 +14,7 @@ public class Documento implements Editavel{
         this.conteudo = builder.conteudo;
         this.categoria = builder.categoria;
         this.dataModificacao = LocalDateTime.now();
+        this.autor = builder.autor;
     }
 
     public String getTitulo() {
@@ -29,6 +31,10 @@ public class Documento implements Editavel{
 
     public LocalDateTime getDataModificacao() {
         return dataModificacao;
+    }
+
+    public Autor getAutor() {
+        return autor;
     }
 
     public void editarTitulo(String titulo) {
@@ -49,6 +55,7 @@ public class Documento implements Editavel{
     public DocumentoMemento criarMemento() {
         return new DocumentoMemento(
                 titulo,
+                autor,
                 conteudo,
                 categoria,
                 dataModificacao);
@@ -56,6 +63,7 @@ public class Documento implements Editavel{
 
     public void restaurarMemento(DocumentoMemento memento) {
         this.titulo = memento.getTitulo();
+        this.autor = memento.getAutor();
         this.conteudo = memento.getConteudo();
         this.categoria = memento.getCategoria();
         this.dataModificacao = memento.getDataModificacao();
@@ -94,13 +102,14 @@ public class Documento implements Editavel{
         sb.append("                    DOCUMENTO\n");
         sb.append("==================================================\n");
 
-        sb.append(String.format("Título:    %s%n", titulo));
-        sb.append(String.format("Categoria: %s%n", categoria));
-        sb.append(String.format("Data:      %s%n", dataModificacao.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))));
+        sb.append(String.format("Título:    %s%n", getTitulo()));
+        sb.append(String.format("Categoria: %s%n", getCategoria()));
+        sb.append(String.format("Autor:     %s%n", getAutor().getNome()));
+        sb.append(String.format("Data:      %s%n", getDataModificacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))));
 
         sb.append("--------------------------------------------------\n");
         sb.append("Conteúdo:\n");
-        sb.append(formatarTexto(conteudo, 50));
+        sb.append(formatarTexto(getConteudo(), 50));
         sb.append("\n");
         sb.append("==================================================\n");
 
@@ -111,6 +120,7 @@ public class Documento implements Editavel{
         private String titulo;
         private String conteudo;
         private String categoria;
+        private Autor autor;
 
         public Builder titulo(String titulo) {
             this.titulo = titulo;
@@ -133,6 +143,11 @@ public class Documento implements Editavel{
             return this;
         }
 
+        public Builder autor(Autor autor) {
+            this.autor = autor;
+            return this;
+        }
+
         public Documento build() {
             if(titulo == null || titulo.isBlank())
                 throw new IllegalArgumentException("Título obrigatório");
@@ -142,12 +157,14 @@ public class Documento implements Editavel{
 
     public static class DocumentoMemento implements Serializable {
         private final String titulo;
+        private final Autor autor;
         private final String conteudo;
         private final String categoria;
         private final LocalDateTime dataModificacao;
 
-        private DocumentoMemento(String titulo, String conteudo, String categoria, LocalDateTime dataModificacao) {
+        private DocumentoMemento(String titulo, Autor autor, String conteudo, String categoria, LocalDateTime dataModificacao) {
             this.titulo = titulo;
+            this.autor = autor;
             this.conteudo = conteudo;
             this.categoria = categoria;
             this.dataModificacao = dataModificacao;
@@ -167,12 +184,16 @@ public class Documento implements Editavel{
 
         public LocalDateTime getDataModificacao() { return dataModificacao; }
 
+        public Autor getAutor() { return autor; }
+
         @Override
         public String toString() {
             return "Título: " + getTitulo() +
                     "\nCategoria: " + getCategoria() +
-                    "\nConteúdo: " + getConteudo() +
-                    "\nData: " + getDataModificacao();
+                    "\nAutor: " + getAutor() +
+                    "\nData: " + getDataModificacao() +
+                    "\nConteúdo: " + getConteudo();
+
         }
     }
 }

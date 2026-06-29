@@ -41,6 +41,9 @@ public class Main {
                     System.out.print("Categoria: ");
                     String categoria = sc.nextLine();
 
+                    System.out.print("Nome do autor:");
+                    String nomeAutor = sc.nextLine();
+
                     System.out.println("Conteúdo (pule uma linha e digite FIM para encerrar): ");
                     StringBuilder sb = new StringBuilder();
 
@@ -54,6 +57,7 @@ public class Main {
                             .titulo(titulo)
                             .categoria(categoria)
                             .conteudo(sb.toString().trim())
+                            .autor(new Autor(nomeAutor))
                             .build();
 
                     String caminho = obterCaminhoArquivo();
