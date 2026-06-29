@@ -4,6 +4,9 @@ import java.time.format.DateTimeFormatter;
 
 public class GerenciadorArquivo {
     public static Documento carregarDocumento(String caminho){
+        if (!caminho.contains(".tcadc")) {
+            throw new IllegalArgumentException("Documento precisa possuir a extensão \".tcadc\".");
+        }
         try(BufferedReader br = new BufferedReader(new FileReader(caminho))){
             String titulo = br.readLine();
             String categoria = br.readLine();

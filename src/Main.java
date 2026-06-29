@@ -159,9 +159,9 @@ public class Main {
         String pasta = sc.nextLine();
 
         if(pasta.isBlank()){
-            return nome + ".txt";
+            return nome + ".tcadc";
         }
-        return pasta + File.separator + nome + ".txt";
+        return pasta + File.separator + nome + ".tcadc";
     }
 
     private static boolean possuiDocumento(Documento documento) {
